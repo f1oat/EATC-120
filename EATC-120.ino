@@ -66,24 +66,24 @@ Modbus modbus(MODBUS_SLAVE_ID, 0, PIN_TXEN);
 uint16_t ModbusRegs[8] = { 0 };
 
 // Status output
-#define MB_READY		(ModbusAddr_t){0}
-#define MB_ERROR		(ModbusAddr_t){1}
-#define MB_TOOLCHANGED	(ModbusAddr_t){2}
+#define MB_READY		(ModbusAddr_t)0
+#define MB_ERROR		(ModbusAddr_t)1
+#define MB_TOOLCHANGED	(ModbusAddr_t)2
 
-#define MB_S1			(ModbusAddr_t){4}
-#define MB_S2			(ModbusAddr_t){5}
-#define MB_S3			(ModbusAddr_t){6}
-#define MB_S4			(ModbusAddr_t){7}
+#define MB_S1			(ModbusAddr_t)4
+#define MB_S2			(ModbusAddr_t)5
+#define MB_S3			(ModbusAddr_t)6
+#define MB_S4			(ModbusAddr_t)7
 
 // Commands
-#define MB_POWER_ON		(ModbusAddr_t){8}
-#define MB_TOOLCHANGE 	(ModbusAddr_t){9}
+#define MB_POWER_ON		(ModbusAddr_t)8
+#define MB_TOOLCHANGE 	(ModbusAddr_t)9
 
 // int variables
-#define MB_COILS	ModbusRegs[0]	// See previous declaration of coils and contacts
-#define MB_COMMAND	ModbusRegs[1]
-#define MB_POSITION	ModbusRegs[2]
-#define MB_STATE	ModbusRegs[3]
+#define MB_COILS		ModbusRegs[0]	// See previous declaration of coils and contacts
+#define MB_COMMAND		ModbusRegs[1]
+#define MB_POSITION		ModbusRegs[2]
+#define MB_STATE		ModbusRegs[3]
 //#define MB_ENCODER	ModbusRegs[4]
 
 unsigned int targetPosition = 0;
