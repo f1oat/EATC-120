@@ -23,6 +23,8 @@
 #include <plcLib.h>
 #include <TimerOne.h>
 
+#include "plcModbus.h"
+
 // Modbus configuration
 
 #define MODBUS_SLAVE_ID 3
@@ -64,18 +66,18 @@ Modbus modbus(MODBUS_SLAVE_ID, 0, PIN_TXEN);
 uint16_t ModbusRegs[8] = { 0 };
 
 // Status output
-#define MB_READY		0
-#define MB_ERROR		1
-#define MB_TOOLCHANGED	2
+#define MB_READY		(ModbusAddr_t){0}
+#define MB_ERROR		(ModbusAddr_t){1}
+#define MB_TOOLCHANGED	(ModbusAddr_t){2}
 
-#define MB_S1			4
-#define MB_S2			5
-#define MB_S3			6
-#define MB_S4			7
+#define MB_S1			(ModbusAddr_t){4}
+#define MB_S2			(ModbusAddr_t){5}
+#define MB_S3			(ModbusAddr_t){6}
+#define MB_S4			(ModbusAddr_t){7}
 
 // Commands
-#define MB_POWER_ON		8
-#define MB_TOOLCHANGE 	9
+#define MB_POWER_ON		(ModbusAddr_t){8}
+#define MB_TOOLCHANGE 	(ModbusAddr_t){9}
 
 // int variables
 #define MB_COILS	ModbusRegs[0]	// See previous declaration of coils and contacts
@@ -87,54 +89,9 @@ uint16_t ModbusRegs[8] = { 0 };
 unsigned int targetPosition = 0;
 unsigned int masterOK = 0;
 
-// Modbus access function
-
-extern unsigned int scanValue;
-
-unsigned int inModbus(int reg)
-{
-	scanValue = bitRead(MB_COILS, reg);
-	return scanValue;
-}
-
-unsigned int inNotModbus(int reg)
-{
-	scanValue = bitRead(MB_COILS, reg) ? 0 : 1;
-	return scanValue;
-}
-
-unsigned int outModbus(int reg) 
-{
-	bitWrite(MB_COILS, reg, scanValue);
-	return(scanValue);
-}
-
-unsigned int setModbus(int reg) {
-	scanValue = scanValue | bitRead(MB_COILS, reg);		// Self latch by ORing with Output pin
-	if (scanValue == 1) {
-		bitSet(ModbusRegs[0], reg);
-	}
-	return(scanValue);
-}
-
-unsigned int resetModbus(int reg) {
-	if (scanValue == 1) {
-		bitClear(MB_COILS, reg);
-	}
-	return(scanValue);
-}
-
-unsigned int andModbus(int reg) {
-	scanValue = scanValue & bitRead(MB_COILS, reg);;
-	return(scanValue);
-}
-
-unsigned int andNotModbus(int reg) {
-	scanValue = scanValue & ~bitRead(MB_COILS, reg);;
-	return(scanValue);
-}
-
 // plclib extensions
+
+extern unsigned int scanValue; 
 
 unsigned int compare(unsigned int reg)
 {
@@ -266,31 +223,31 @@ void pollPLC()
 	setMotor(true, 0.0);
 	reset(PIN_LED);
 	setValue(MB_POSITION, 0);
-	andModbus(MB_POWER_ON);
+	andBit(MB_POWER_ON);
 	setState(MB_STATE, ST_WAIT);
 
 	// *** Wait state
 	
 	// Update status
 	state(MB_STATE, ST_WAIT);
-	outModbus(MB_READY);
+	out(MB_READY);
 	setMotor(false, 0.8);
 	set(PIN_LED);
 
 	// Waiting for new tool change command
 
 	state(MB_STATE, ST_WAIT);
-	andModbus(MB_TOOLCHANGE);
+	andBit(MB_TOOLCHANGE);
 	setValue(targetPosition, MB_COMMAND);
 
 	state(MB_STATE, ST_WAIT);
-	andModbus(MB_TOOLCHANGE);
+	andBit(MB_TOOLCHANGE);
 	andNotBit(atTargetPosition());
 	setState(MB_STATE, ST_FORW);
 
 	// We are already at position, give feedback
 	state(MB_STATE, ST_WAIT);
-	andModbus(MB_TOOLCHANGE);
+	andBit(MB_TOOLCHANGE);
 	andBit(atTargetPosition());
 	setState(MB_STATE, ST_DONE);
 
@@ -352,34 +309,34 @@ void pollPLC()
 
 	// Waiting for toolchange command disable
 	state(MB_STATE, ST_DONE);
-	outModbus(MB_TOOLCHANGED);
+	out(MB_TOOLCHANGED);
 	setMotor(false, 0.8);
-	andNotModbus(MB_TOOLCHANGE);
+	andBit(MB_TOOLCHANGE);
 	setState(MB_STATE, ST_WAIT);
 
 	// *** Error state
 
 	state(MB_STATE, ST_ERROR);
-	outModbus(MB_ERROR);
+	out(MB_ERROR);
 	setMotor(true, 0.0);
 	setValue(MB_POSITION, 0);
 
 	// Manage power off
 
-	inNotModbus(MB_POWER_ON);
+	inNot(MB_POWER_ON);
 	setState(MB_STATE, ST_INIT);
 
 	// Copy position encoder input for debug
 
 	in(PIN_S1);
-	outModbus(MB_S1);
+	out(MB_S1);
 	
 	in(PIN_S2);
-	outModbus(MB_S2);
+	out(MB_S2);
 	
 	in(PIN_S3);
-	outModbus(MB_S3);
+	out(MB_S3);
 	
 	in(PIN_S4);
-	outModbus(MB_S4);
+	out(MB_S4);
 }
