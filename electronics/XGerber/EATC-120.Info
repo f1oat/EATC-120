@@ -1,0 +1,23 @@
+CAM output for current project EATC-120.T3001
+Output on 28. mars 2017, 03:46h
+Current project created using TARGET 18.7.0.21 smart
+Output created using TARGET 3001! V18.7.0.35
+DELIVERY ADDRESS:
+  
+  
+  
+  GB- 
+  Tel: 
+  FAX: 
+  eMail: 
+Size of PCB: 86,36 mm x 67,145 mm
+
+Description of created files as follows:
+
+EATC-120.Bot = 2 = Copper bottom L1   ( *.Bot )
+EATC-120.Tool = drill tool list
+EATC-120.Drill = Galvanised drills
+EATC-120.Outline = 23 = PCB outline   ( *.Outline )
+EATC-120.Apr = TARGET 3001! aperture list
+EATC-120.Whl = Eagle compatible aperture list
+
