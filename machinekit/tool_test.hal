@@ -1,20 +1,20 @@
 loadusr -Wn tool_test gladevcp tool_test.ui
-loadusr -W mb2hal config=tool_test.ini
+loadusr -W mb2hal config=modbus.ini
 
-net ready 	    	mb2hal.plc.in.00 => tool_test.ready
-net error 		    mb2hal.plc.in.01 => tool_test.error
-net tool-changed    mb2hal.plc.in.02 => tool_test.tool-changed
+net ready 	    	mb2hal.eatc.in.00 => tool_test.ready
+net error 		    mb2hal.eatc.in.01 => tool_test.error
+net tool-changed    mb2hal.eatc.in.02 => tool_test.tool-changed
 
-net pin-s1 	    mb2hal.plc.in.04 => tool_test.pin-s1
-net pin-s2 	    mb2hal.plc.in.05 => tool_test.pin-s2
-net pin-s3 	    mb2hal.plc.in.06 => tool_test.pin-s3
-net pin-s4 	    mb2hal.plc.in.07 => tool_test.pin-s4
+net pin-s1 	    mb2hal.eatc.in.04 => tool_test.pin-s1
+net pin-s2 	    mb2hal.eatc.in.05 => tool_test.pin-s2
+net pin-s3 	    mb2hal.eatc.in.06 => tool_test.pin-s3
+net pin-s4 	    mb2hal.eatc.in.07 => tool_test.pin-s4
 
-net power-on    tool_test.power-on => mb2hal.plc.out.00
-net tool-change tool_test.tool-change => mb2hal.plc.out.01
+net power-on    tool_test.power-on => mb2hal.eatc.out.00
+net tool-change tool_test.tool-change => mb2hal.eatc.out.01
 
-net target-tool tool_test.target-tool-f => mb2hal.plc.command.00
+net target-tool tool_test.target-tool-f => mb2hal.eatc.command.00
  
-net current-tool mb2hal.plc.status.00.int => tool_test.current-tool
-net state       mb2hal.plc.status.01.int => tool_test.state
-
+net current-tool mb2hal.eatc.status.00.int => tool_test.current-tool
+net state        mb2hal.eatc.status.01.int => tool_test.state
+net error-code   mb2hal.eatc.status.02.int

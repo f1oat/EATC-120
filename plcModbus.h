@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-extern uint16_t ModbusRegs[8];
+extern uint16_t ModbusRegs[];
 
 typedef unsigned char ModbusAddr_t;
 
